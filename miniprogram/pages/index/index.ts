@@ -3,7 +3,7 @@
 const app = getApp<IAppOption>()
 
 // 考研高频单词库（示例数据，实际应从云数据库获取）
-const wordDatabase = [
+export const wordDatabase = [
   { word: 'abandon', phonetic: '/əˈbændən/', meaning: 'v. 放弃；抛弃；离弃' },
   { word: 'ability', phonetic: '/əˈbɪləti/', meaning: 'n. 能力；才能；本领' },
   { word: 'abroad', phonetic: '/əˈbrɔːd/', meaning: 'adv. 在国外；到国外' },
@@ -52,16 +52,20 @@ Page({
   // 下拉触发搜索入口（保持页面视觉极简）
   onPullDownRefresh() {
     this.setData({ pullHintVisible: true })
+
+    // 轻微震动反馈
+    wx.vibrateShort({ type: 'light' })
+
+    // 立即结束下拉动画
     wx.stopPullDownRefresh()
 
-    setTimeout(() => {
-      wx.navigateTo({
-        url: '/pages/search/search',
-        complete: () => {
-          this.setData({ pullHintVisible: false })
-        },
-      })
-    }, 150)
+    // 轻缓跳转到搜索页
+    wx.navigateTo({
+      url: '/pages/search/search',
+      complete: () => {
+        this.setData({ pullHintVisible: false })
+      },
+    })
   },
 
   /**
@@ -79,7 +83,7 @@ Page({
     // 随机选择鼓励语
     const randomEncouragement = encouragements[Math.floor(Math.random() * encouragements.length)]
     
-    // 获取今日单词（基于日期选择，确保每天相同）
+    // 默认获取今日单词（基于日期选择，确保每天相同）
     const todayWord = this.getTodayWord()
     
     this.setData({
@@ -88,9 +92,12 @@ Page({
       wordData: todayWord,
     })
     
+    // 检查是否有搜索页选中的单词需要展示
+    this.applySearchedWord()
+    
     // 检查今日打卡状态 & 收藏状态
     this.checkTodayStatus()
-    this.checkFavoriteStatus(todayWord)
+    this.checkFavoriteStatus(this.data.wordData)
   },
 
   /**
@@ -101,6 +108,24 @@ Page({
     const dayOfYear = Math.floor((today.getTime() - new Date(today.getFullYear(), 0, 0).getTime()) / 86400000)
     const wordIndex = dayOfYear % wordDatabase.length
     return wordDatabase[wordIndex]
+  },
+
+  /**
+   * 如果从搜索页返回时选择了单词，则优先展示该单词
+   */
+  applySearchedWord() {
+    try {
+      const searched = wx.getStorageSync('search_selected_word')
+      if (searched && searched.word) {
+        this.setData({
+          wordData: searched,
+        })
+        // 使用后清除，避免下次进来仍然覆盖今日单词
+        wx.removeStorageSync('search_selected_word')
+      }
+    } catch (e) {
+      // 忽略异常，保持今日单词
+    }
   },
 
   /**

@@ -1,0 +1,59 @@
+<view class="search-page">
+  <!-- 顶部搜索框 -->
+  <view class="search-bar">
+    <view class="search-input-wrapper">
+      <text class="search-icon">🔍</text>
+      <input
+        class="search-input"
+        type="text"
+        placeholder="输入英文或中文释义进行搜索"
+        placeholder-class="search-placeholder"
+        confirm-type="search"
+        focus="{{true}}"
+        value="{{keyword}}"
+        bindinput="onInputChange"
+        bindconfirm="onConfirm"
+      />
+      <text wx:if="{{keyword}}" class="clear-icon" bindtap="clearKeyword">✕</text>
+    </view>
+    <view class="cancel-text" bindtap="goBack">取消</view>
+  </view>
+
+  <!-- 中间内容区域 -->
+  <scroll-view class="result-scroll" scroll-y>
+    <!-- 空状态 -->
+    <view wx:if="{{!keyword}}">
+      <view class="empty-state">
+        <view class="empty-word">静心</view>
+        <view class="empty-tip">轻轻输入一个单词，或一句释义</view>
+      </view>
+    </view>
+
+    <!-- 无结果 -->
+    <view wx:elif="{{keyword && results.length === 0}}">
+      <view class="empty-state">
+        <view class="empty-word">无匹配</view>
+        <view class="empty-tip">换一个表达方式再试试</view>
+      </view>
+    </view>
+
+    <!-- 搜索结果列表 -->
+    <view wx:else>
+      <view
+        class="result-item"
+        wx:for="{{results}}"
+        wx:key="word"
+        bindtap="selectWord"
+        data-item="{{item}}"
+      >
+        <view class="result-word-row">
+          <text class="result-word">{{item.word}}</text>
+          <text class="result-phonetic">{{item.phonetic}}</text>
+        </view>
+        <view class="result-meaning">{{item.meaning}}</view>
+      </view>
+    </view>
+  </scroll-view>
+</view>
+
+

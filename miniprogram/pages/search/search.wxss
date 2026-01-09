@@ -1,0 +1,122 @@
+page {
+  height: 100vh;
+  background: #F5F1E8;
+}
+
+.search-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding: 30rpx 40rpx 40rpx;
+  box-sizing: border-box;
+}
+
+.search-bar {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 40rpx;
+}
+
+.search-input-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: 999rpx;
+  padding: 12rpx 24rpx;
+  box-shadow: 0 6rpx 18rpx rgba(168, 181, 160, 0.25);
+}
+
+.search-icon {
+  font-size: 28rpx;
+  color: #A8B5A0;
+  margin-right: 12rpx;
+}
+
+.search-input {
+  flex: 1;
+  font-size: 28rpx;
+  color: #5A6B5D;
+}
+
+.search-placeholder {
+  color: #B3BEB5;
+}
+
+.clear-icon {
+  font-size: 26rpx;
+  color: #B3BEB5;
+  padding-left: 16rpx;
+}
+
+.cancel-text {
+  margin-left: 20rpx;
+  font-size: 28rpx;
+  color: #9BA8A3;
+}
+
+.result-scroll {
+  flex: 1;
+  margin-top: 10rpx;
+}
+
+.empty-state {
+  margin-top: 140rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #9BA8A3;
+}
+
+.empty-word {
+  font-size: 40rpx;
+  letter-spacing: 8rpx;
+  color: #A8B5A0;
+  margin-bottom: 20rpx;
+}
+
+.empty-tip {
+  font-size: 26rpx;
+  letter-spacing: 4rpx;
+}
+
+.result-item {
+  padding: 32rpx 26rpx;
+  margin-bottom: 24rpx;
+  border-radius: 28rpx;
+  background: rgba(255, 255, 255, 0.7);
+  box-shadow: 0 10rpx 24rpx rgba(168, 181, 160, 0.25);
+}
+
+.result-word-row {
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 14rpx;
+}
+
+.result-word {
+  /* 复用首页 word-main 的感觉：大号、适度字重、豆绿色 */
+  font-size: 60rpx;
+  font-weight: 400;
+  color: #5A6B5D;
+  letter-spacing: 4rpx;
+}
+
+.result-phonetic {
+  font-size: 26rpx;
+  color: #9BA8A3;
+  font-style: italic;
+  margin-left: 16rpx;
+}
+
+.result-meaning {
+  font-size: 30rpx;
+  color: #6B7A6F;
+  line-height: 1.8;
+}
+
+
