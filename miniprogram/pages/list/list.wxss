@@ -1,0 +1,10 @@
+/* pages/list/list.wxss */
+.container1 view{
+  width: 100px;
+  height: 100px;
+  text-align: center;
+  line-height: 100px;
+}
+.container1 view:nth-child(1){
+  background-color: lightblue;
+}

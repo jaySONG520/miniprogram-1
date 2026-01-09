@@ -1,0 +1,26 @@
+<!--index.wxml-->
+<view class="page-container">
+  <!-- 顶部：日期和鼓励语 -->
+  <view class="header-section">
+    <view class="date-text">{{currentDate}}</view>
+    <view class="encouragement-text">{{encouragement}}</view>
+  </view>
+
+  <!-- 中间：单词展示区 -->
+  <view class="word-section">
+    <view class="word-main {{checked ? 'checked' : ''}}">{{wordData.word}}</view>
+    <view class="word-phonetic">{{wordData.phonetic}}</view>
+    <view class="word-meaning">{{wordData.meaning}}</view>
+  </view>
+
+  <!-- 底部：打卡按钮 -->
+  <view class="footer-section">
+    <button 
+      class="check-button {{checked ? 'checked' : ''}}" 
+      bindtap="handleCheck"
+      disabled="{{checked}}"
+    >
+      <text class="check-text">{{checked ? '✓ 今日已打卡' : '已阅打卡'}}</text>
+    </button>
+  </view>
+</view>
