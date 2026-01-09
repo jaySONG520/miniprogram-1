@@ -1,11 +1,14 @@
 <!--index.wxml-->
 <view class="page-container">
-  <!-- 顶部：日期、搜索入口和鼓励语 -->
+  <!-- 顶部：下拉提示、日期和鼓励语 -->
   <view class="header-section">
+    <view class="pull-hint {{pullHintVisible ? 'visible' : ''}}">
+      ↓ 下拉搜索单词
+    </view>
     <view class="date-text">{{currentDate}}</view>
     <view 
       class="encouragement-text {{encouragementAnimating ? 'animating' : ''}}" 
-      bindtap="changeEncouragement"
+      bindtap="switchEncouragement"
     >
       {{encouragement}}
     </view>
@@ -13,9 +16,11 @@
 
   <!-- 中间：单词展示区 -->
   <view class="word-section">
-    <!-- 右上角低调收藏星标 -->
-    <view class="word-favorite-wrapper" bindtap="toggleFavorite">
-      <text class="favorite-icon {{isFavorite ? 'active' : ''}}">★</text>
+    <!-- 右上角收藏星标 -->
+    <view class="word-favorite-wrapper" bindtap="handleFavorite">
+      <text class="favorite-icon {{isFavorite ? 'active' : ''}}">
+        {{isFavorite ? '★' : '☆'}}
+      </text>
     </view>
 
     <view class="word-main {{checked ? 'checked' : ''}}">{{wordData.word}}</view>

@@ -37,6 +37,7 @@ Page({
     checked: false,
     isFavorite: false,
     encouragementAnimating: false,
+    pullHintVisible: false,
   },
 
   onLoad() {
@@ -50,12 +51,17 @@ Page({
 
   // 下拉触发搜索入口（保持页面视觉极简）
   onPullDownRefresh() {
-    wx.navigateTo({
-      url: '/pages/search/search',
-      complete: () => {
-        wx.stopPullDownRefresh()
-      },
-    })
+    this.setData({ pullHintVisible: true })
+    wx.stopPullDownRefresh()
+
+    setTimeout(() => {
+      wx.navigateTo({
+        url: '/pages/search/search',
+        complete: () => {
+          this.setData({ pullHintVisible: false })
+        },
+      })
+    }, 150)
   },
 
   /**
@@ -172,9 +178,9 @@ Page({
   },
 
   /**
-   * 切换收藏状态
+   * 收藏 / 取消收藏当前单词
    */
-  toggleFavorite() {
+  handleFavorite() {
     const currentWord = this.data.wordData
     if (!currentWord || !currentWord.word) {
       return
@@ -216,7 +222,7 @@ Page({
   /**
    * 更换随机鼓励语（点击触发）
    */
-  changeEncouragement() {
+  switchEncouragement() {
     if (!encouragements.length) return
 
     let next = this.data.encouragement
@@ -237,7 +243,7 @@ Page({
       this.setData({
         encouragementAnimating: false,
       })
-    }, 350)
+    }, 300)
   },
 
   /**
