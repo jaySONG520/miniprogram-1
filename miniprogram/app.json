@@ -1,6 +1,7 @@
 {
   "pages": [
     "pages/index/index",
+    "pages/study/study",
     "pages/search/search",
     "pages/logs/logs"
   ],

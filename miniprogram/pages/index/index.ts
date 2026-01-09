@@ -1,20 +1,8 @@
 // index.ts
 // 获取应用实例
 const app = getApp<IAppOption>()
-
-// 考研高频单词库（示例数据，实际应从云数据库获取）
-export const wordDatabase = [
-  { word: 'abandon', phonetic: '/əˈbændən/', meaning: 'v. 放弃；抛弃；离弃' },
-  { word: 'ability', phonetic: '/əˈbɪləti/', meaning: 'n. 能力；才能；本领' },
-  { word: 'abroad', phonetic: '/əˈbrɔːd/', meaning: 'adv. 在国外；到国外' },
-  { word: 'absence', phonetic: '/ˈæbsəns/', meaning: 'n. 缺席；不在；缺乏' },
-  { word: 'absolute', phonetic: '/ˈæbsəluːt/', meaning: 'adj. 绝对的；完全的' },
-  { word: 'absorb', phonetic: '/əbˈsɔːb/', meaning: 'v. 吸收；吸引；承受' },
-  { word: 'abstract', phonetic: '/ˈæbstrækt/', meaning: 'adj. 抽象的 n. 摘要' },
-  { word: 'academic', phonetic: '/ˌækəˈdemɪk/', meaning: 'adj. 学术的；理论的' },
-  { word: 'accept', phonetic: '/əkˈsept/', meaning: 'v. 接受；承认；同意' },
-  { word: 'access', phonetic: '/ˈækses/', meaning: 'n. 通道；访问 v. 存取' },
-]
+// 使用相对路径引入本地词库，避免别名在小程序环境中无法解析
+import { dictionary, Word } from '../../data/dictionary'
 
 // 鼓励语库
 const encouragements = [
@@ -29,15 +17,12 @@ Page({
   data: {
     currentDate: '',
     encouragement: '',
-    wordData: {
-      word: '',
-      phonetic: '',
-      meaning: '',
-    },
+    wordData: {} as Word,
     checked: false,
     isFavorite: false,
     encouragementAnimating: false,
     pullHintVisible: false,
+    reviewCount: 0,
   },
 
   onLoad() {
@@ -47,6 +32,7 @@ Page({
   onShow() {
     // 每次显示页面时检查打卡状态
     this.checkTodayStatus()
+    this.updateReviewCount()
   },
 
   // 下拉触发搜索入口（保持页面视觉极简）
@@ -66,6 +52,26 @@ Page({
         this.setData({ pullHintVisible: false })
       },
     })
+  },
+
+  /**
+   * 计算今日需要复习的单词数量
+   */
+  updateReviewCount() {
+    const now = Date.now()
+    let count = 0
+    try {
+      const stats = wx.getStorageSync('word_stats') || {}
+      Object.keys(stats).forEach(id => {
+        const stat = stats[id]
+        if (stat && stat.nextReviewTime && stat.nextReviewTime <= now) {
+          count++
+        }
+      })
+    } catch (e) {
+      count = 0
+    }
+    this.setData({ reviewCount: count })
   },
 
   /**
@@ -106,8 +112,8 @@ Page({
   getTodayWord() {
     const today = new Date()
     const dayOfYear = Math.floor((today.getTime() - new Date(today.getFullYear(), 0, 0).getTime()) / 86400000)
-    const wordIndex = dayOfYear % wordDatabase.length
-    return wordDatabase[wordIndex]
+    const wordIndex = dayOfYear % dictionary.length
+    return dictionary[wordIndex]
   },
 
   /**
@@ -269,6 +275,15 @@ Page({
         encouragementAnimating: false,
       })
     }, 300)
+  },
+
+  /**
+   * 跳转到复习页面（今日待复习）
+   */
+  goToReview() {
+    wx.navigateTo({
+      url: '/pages/study/study?type=review',
+    })
   },
 
   /**

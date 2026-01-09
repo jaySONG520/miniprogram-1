@@ -1,9 +1,9 @@
-import { wordDatabase } from '../index/index'
+import { dictionary } from '../../data/dictionary'
 
 Page({
   data: {
     keyword: '',
-    results: [] as typeof wordDatabase,
+    results: [] as typeof dictionary,
   },
 
   onLoad() {
@@ -36,7 +36,7 @@ Page({
     }
 
     const lower = keyword.toLowerCase()
-    const res = wordDatabase.filter(item => {
+    const res = dictionary.filter(item => {
       const word = (item.word || '').toLowerCase()
       const meaning = (item.meaning || '').toLowerCase()
       return word.indexOf(lower) !== -1 || meaning.indexOf(lower) !== -1

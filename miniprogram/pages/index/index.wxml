@@ -12,6 +12,15 @@
     >
       {{encouragement}}
     </view>
+
+    <!-- 今日复习提醒 -->
+    <view
+      wx:if="{{reviewCount > 0}}"
+      class="review-banner"
+      bindtap="goToReview"
+    >
+      今日有 {{reviewCount}} 个单词待温故，去复习吧
+    </view>
   </view>
 
   <!-- 中间：单词展示区 -->
