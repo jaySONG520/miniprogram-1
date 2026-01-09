@@ -35,6 +35,8 @@ Page({
       meaning: '',
     },
     checked: false,
+    isFavorite: false,
+    encouragementAnimating: false,
   },
 
   onLoad() {
@@ -44,6 +46,16 @@ Page({
   onShow() {
     // 每次显示页面时检查打卡状态
     this.checkTodayStatus()
+  },
+
+  // 下拉触发搜索入口（保持页面视觉极简）
+  onPullDownRefresh() {
+    wx.navigateTo({
+      url: '/pages/search/search',
+      complete: () => {
+        wx.stopPullDownRefresh()
+      },
+    })
   },
 
   /**
@@ -70,8 +82,9 @@ Page({
       wordData: todayWord,
     })
     
-    // 检查今日打卡状态
+    // 检查今日打卡状态 & 收藏状态
     this.checkTodayStatus()
+    this.checkFavoriteStatus(todayWord)
   },
 
   /**
@@ -93,6 +106,25 @@ Page({
     this.setData({
       checked: !!checkRecord,
     })
+  },
+
+  /**
+   * 检查当前单词是否已被收藏
+   */
+  checkFavoriteStatus(wordData: { word: string; phonetic: string; meaning: string }) {
+    try {
+      const favorites = wx.getStorageSync('favorite_words') || []
+      const exists = Array.isArray(favorites)
+        ? favorites.some((item: any) => item && item.word === wordData.word)
+        : false
+      this.setData({
+        isFavorite: exists,
+      })
+    } catch (e) {
+      this.setData({
+        isFavorite: false,
+      })
+    }
   },
 
   /**
@@ -137,6 +169,75 @@ Page({
 
     // 可以在这里添加云数据库上传逻辑
     // this.uploadCheckRecord(today)
+  },
+
+  /**
+   * 切换收藏状态
+   */
+  toggleFavorite() {
+    const currentWord = this.data.wordData
+    if (!currentWord || !currentWord.word) {
+      return
+    }
+
+    let favorites: any[] = []
+    try {
+      const stored = wx.getStorageSync('favorite_words')
+      if (Array.isArray(stored)) {
+        favorites = stored
+      }
+    } catch (e) {
+      favorites = []
+    }
+
+    const index = favorites.findIndex(item => item && item.word === currentWord.word)
+
+    if (index > -1) {
+      // 已收藏 -> 取消收藏
+      favorites.splice(index, 1)
+      this.setData({
+        isFavorite: false,
+      })
+    } else {
+      // 未收藏 -> 加入收藏（防止重复字段，存储干净对象）
+      favorites.push({
+        word: currentWord.word,
+        phonetic: currentWord.phonetic,
+        meaning: currentWord.meaning,
+      })
+      this.setData({
+        isFavorite: true,
+      })
+    }
+
+    wx.setStorageSync('favorite_words', favorites)
+  },
+
+  /**
+   * 更换随机鼓励语（点击触发）
+   */
+  changeEncouragement() {
+    if (!encouragements.length) return
+
+    let next = this.data.encouragement
+    let tries = 0
+
+    // 尽量避免连续两次相同文案
+    while (next === this.data.encouragement && tries < 5) {
+      next = encouragements[Math.floor(Math.random() * encouragements.length)]
+      tries++
+    }
+
+    this.setData({
+      encouragement: next,
+      encouragementAnimating: true,
+    })
+
+    setTimeout(() => {
+      this.setData({
+        encouragementAnimating: false,
+      })
+    }, 350)
   },
 
   /**

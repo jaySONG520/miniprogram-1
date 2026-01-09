@@ -18,7 +18,7 @@ page {
 .header-section {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: stretch;
   margin-bottom: 120rpx;
 }
 
@@ -28,7 +28,7 @@ page {
   /* 灰豆绿 */
   font-weight: 300;
   letter-spacing: 2rpx;
-  margin-bottom: 20rpx;
+  margin-bottom: 16rpx;
 }
 
 .encouragement-text {
@@ -37,6 +37,13 @@ page {
   /* 雾霾蓝 */
   font-weight: 300;
   letter-spacing: 4rpx;
+  text-align: center;
+  margin-top: 8rpx;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.encouragement-text.animating {
+  animation: fadeEncouragement 0.35s ease-out;
 }
 
 /* 单词展示区 */
@@ -47,6 +54,7 @@ page {
   align-items: center;
   justify-content: center;
   padding: 60rpx 0;
+  position: relative;
 }
 
 .word-main {
@@ -64,6 +72,27 @@ page {
   color: #7A9B8F;
   transform: scale(0.95);
   opacity: 0.8;
+}
+
+.word-favorite-wrapper {
+  position: absolute;
+  top: 40rpx;
+  right: 80rpx;
+  padding: 14rpx;
+  border-radius: 999rpx;
+  background: rgba(245, 241, 232, 0.4);
+}
+
+.favorite-icon {
+  font-size: 44rpx;
+  color: #C0C7C3;
+  transition: transform 0.3s ease, color 0.3s ease, text-shadow 0.3s ease;
+}
+
+.favorite-icon.active {
+  color: #E3B8A0;
+  transform: scale(1.15);
+  text-shadow: 0 4rpx 10rpx rgba(227, 184, 160, 0.6);
 }
 
 .word-phonetic {
@@ -161,4 +190,19 @@ page {
 
 .check-button.checked {
   animation: checkSuccess 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 鼓励语淡入动画 */
+@keyframes fadeEncouragement {
+  0% {
+    opacity: 0;
+    transform: translateY(8rpx);
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 1;
+  }
 }

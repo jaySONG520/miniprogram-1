@@ -3,5 +3,6 @@
   },
   "navigationBarTitleText": "每日一词",
   "navigationBarBackgroundColor": "#F5F1E8",
-  "navigationBarTextStyle": "black"
+  "navigationBarTextStyle": "black",
+  "enablePullDownRefresh": true
 }
