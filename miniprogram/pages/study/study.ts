@@ -17,6 +17,7 @@ const DAY_MS = 24 * 60 * 60 * 1000
 
 Page({
   data: {
+    mode: 'hub' as 'hub' | 'session',
     sessionType: 'new' as SessionType,
     round: 1,
     currentWordIndex: 0,
@@ -27,6 +28,22 @@ Page({
     showDetail: false,
     lastAnswerCorrect: true,
     isSessionFinished: false,
+    newCount: 0,
+    reviewCount: 0,
+  },
+
+  // 进入学习模式（从学习中心点击）
+  startStudy(e: any) {
+    const typeParam = e.currentTarget.dataset.type as SessionType
+    const type: SessionType = typeParam === 'review' ? 'review' : 'new'
+
+    this.setData({
+      mode: 'session',
+      sessionType: type,
+    })
+
+    this.hideTabBarSafe()
+    this.initSession(type)
   },
 
   _wordList: [] as Word[],
@@ -34,10 +51,45 @@ Page({
   _currentWordWrongInThisCycle: false,
 
   onLoad(options: any) {
-    const type: SessionType = (options && options.type === 'review') ? 'review' : 'new'
-    this.setData({ sessionType: type })
     this.loadStats()
-    this.initSession(type)
+
+    let mode: 'hub' | 'session' = 'hub'
+    let type: SessionType = 'new'
+
+    if (options && options.type) {
+      mode = 'session'
+      type = options.type === 'review' ? 'review' : 'new'
+      this.initSession(type)
+    } else {
+      this.updateCounts()
+    }
+
+    this.setData({ sessionType: type, mode })
+
+    // 根据当前模式控制 TabBar 显隐
+    if (mode === 'session') {
+      this.hideTabBarSafe()
+    } else {
+      this.showTabBarSafe()
+    }
+  },
+
+  onShow() {
+    this.loadStats()
+    this.updateCounts()
+
+    // 页面重新显示时，保证 TabBar 状态与当前模式一致
+    const { mode } = this.data
+    if (mode === 'session') {
+      this.hideTabBarSafe()
+    } else {
+      this.showTabBarSafe()
+    }
+  },
+
+  onHide() {
+    // 离开页面时恢复 TabBar，避免其他页面被意外隐藏
+    this.showTabBarSafe()
   },
 
   loadStats() {
@@ -55,6 +107,37 @@ Page({
 
   saveStats() {
     wx.setStorageSync(STORAGE_KEY_STATS, this._wordStats)
+  },
+
+  updateCounts() {
+    const now = Date.now()
+    let reviewCount = 0
+    let newCount = 0
+
+    Object.keys(this._wordStats).forEach(id => {
+      const stat = this._wordStats[id]
+      if (stat && stat.nextReviewTime && stat.nextReviewTime <= now) {
+        reviewCount++
+      }
+    })
+
+    // 新词：尚未出现在统计中的单词数量（最多显示 10 个作为“今日目标”）
+    newCount = dictionary.filter(w => !this._wordStats[w.id]).length
+
+    this.setData({
+      reviewCount,
+      newCount: Math.min(10, newCount),
+    })
+  },
+
+  // 从学习模式返回到学习中心（不离开当前页面）
+  backToHub() {
+    this.setData({
+      mode: 'hub',
+      showDetail: false,
+    })
+    this.showTabBarSafe()
+    this.updateCounts()
   },
 
   initSession(type: SessionType) {
@@ -258,6 +341,22 @@ Page({
     }
 
     this._wordStats[word.id] = stat
+  },
+
+  hideTabBarSafe() {
+    try {
+      wx.hideTabBar()
+    } catch (e) {
+      // ignore
+    }
+  },
+
+  showTabBarSafe() {
+    try {
+      wx.showTabBar()
+    } catch (e) {
+      // ignore
+    }
   },
 })
 

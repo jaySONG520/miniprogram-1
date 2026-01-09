@@ -281,8 +281,8 @@ Page({
    * 跳转到复习页面（今日待复习）
    */
   goToReview() {
-    wx.navigateTo({
-      url: '/pages/study/study?type=review',
+    wx.switchTab({
+      url: '/pages/study/study',
     })
   },
 

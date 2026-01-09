@@ -12,6 +12,22 @@
     "enablePullDownRefresh": true,
     "backgroundColor": "#F5F1E8"
   },
+  "tabBar": {
+    "color": "#C7C7C7",
+    "selectedColor": "#A8B5A0",
+    "backgroundColor": "#F5F1E8",
+    "borderStyle": "white",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "首页"
+      },
+      {
+        "pagePath": "pages/study/study",
+        "text": "学习"
+      }
+    ]
+  },
   "style": "v2",
   "componentFramework": "glass-easel",
   "lazyCodeLoading": "requiredComponents"
