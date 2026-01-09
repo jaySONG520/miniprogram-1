@@ -1,6 +1,6 @@
 <view class="study-page">
-  <!-- 学习中心模式：两个入口卡片 -->
-  <view wx:if="{{mode === 'hub'}}" class="study-hub">
+  <!-- 学习中心：两个入口卡片 -->
+  <view class="study-hub">
     <view class="hub-card new-card" bindtap="startStudy" data-type="new">
       <view class="hub-title">新词学习</view>
       <view class="hub-count">{{newCount}} 个待学新词</view>
@@ -14,84 +14,4 @@
     </view>
   </view>
 
-  <!-- 学习模式：三轮背诵（去盒子化） -->
-  <view wx:else>
-    <!-- 顶部：返回箭头 + 轮次与计数 -->
-    <view class="study-header">
-      <view class="top-row">
-        <view class="nav-back" bindtap="backToHub">‹</view>
-        <view class="round-text">
-          {{round === 1 ? '第一轮 · 认义' : (round === 2 ? '第二轮 · 识形' : '第三轮 · 回想')}}
-        </view>
-        <view class="progress-info">
-          {{currentWordIndex + 1}} / {{totalWords}}
-        </view>
-      </view>
-    </view>
-
-    <!-- 中间：去盒子化内容区 -->
-    <view class="study-content fade-slide-card" wx:if="{{!showDetail}}">
-      <!-- 第一轮：单词 + 4 个全宽选项 -->
-      <view wx:if="{{round === 1}}">
-        <view class="word-block">
-          <view class="study-word">{{currentWord.word}}</view>
-          <view class="study-phonetic">{{currentWord.phonetic}}</view>
-        </view>
-        <view class="study-tip">选择与该单词最贴近的中文释义</view>
-        <view class="options-group">
-          <button
-            wx:for="{{currentOptions}}"
-            wx:key="*this"
-            class="option-btn"
-            bindtap="handleOptionTap"
-            data-option="{{item}}"
-          >
-            {{item}}
-          </button>
-        </view>
-      </view>
-
-      <!-- 第二轮：识形，只展示单词与提示 -->
-      <view wx:elif="{{round === 2}}">
-        <view class="study-word">{{currentWord.word}}</view>
-        <view class="study-phonetic">{{currentWord.phonetic}}</view>
-        <view class="study-tip">还记得这个单词的意思吗？</view>
-      </view>
-
-      <!-- 第三轮：回想，只展示中文与提示 -->
-      <view wx:else>
-        <view class="study-meaning">{{currentWord.meaning}}</view>
-        <view class="study-tip">看到中文，你还能想起这个英文单词吗？</view>
-      </view>
-    </view>
-
-    <!-- 底部固定操作区：第二、三轮使用 -->
-    <view class="bottom-actions" wx:if="{{!showDetail && round === 2}}">
-      <button class="bottom-btn left" bindtap="handleKnow">认识</button>
-      <button class="bottom-btn right" bindtap="handleDontKnow">不认识</button>
-    </view>
-    <view class="bottom-actions" wx:if="{{!showDetail && round === 3}}">
-      <button class="bottom-btn left" bindtap="handleRecall">想起来了</button>
-      <button class="bottom-btn right" bindtap="handleDontRecall">没想起</button>
-    </view>
-
-    <!-- 全屏沉浸式详情层（毛玻璃背景） -->
-    <view wx:if="{{showDetail}}" class="detail-overlay">
-      <view class="detail-panel fade-slide-card">
-        <view class="detail-word">{{currentWord.word}}</view>
-        <view class="detail-phonetic">{{currentWord.phonetic}}</view>
-        <view class="detail-meaning">{{currentWord.meaning}}</view>
-        <view class="detail-example">
-          <view class="detail-example-en">{{currentWord.example}}</view>
-          <view class="detail-example-zh">{{currentWord.exampleMeaning}}</view>
-        </view>
-        <view class="detail-tip">
-          {{lastAnswerCorrect ? '很好，继续下一步吧。' : '没关系，再一起温柔地记一次。'}}
-        </view>
-        <button class="next-btn" bindtap="handleNextFromDetail">
-          {{isSessionFinished ? '本组完成' : '下一个'}}
-        </button>
-      </view>
-    </view>
-  </view>
 </view>
